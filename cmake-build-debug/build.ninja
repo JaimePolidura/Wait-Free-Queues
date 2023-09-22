@@ -41,7 +41,7 @@ include CMakeFiles/rules.ninja
 
 cmake_ninja_workdir = C$:/programacion/Wait-Free-Queue/cmake-build-debug/
 # =============================================================================
-# Object build statements for EXECUTABLE target wait-free-queue
+# Object build statements for STATIC_LIBRARY target wait-free-queue
 
 
 #############################################
@@ -49,29 +49,27 @@ cmake_ninja_workdir = C$:/programacion/Wait-Free-Queue/cmake-build-debug/
 
 build cmake_object_order_depends_target_wait-free-queue: phony || CMakeFiles/wait-free-queue.dir
 
-build CMakeFiles/wait-free-queue.dir/main.cpp.obj: CXX_COMPILER__wait-free-queue_unscanned_Debug C$:/programacion/Wait-Free-Queue/main.cpp || cmake_object_order_depends_target_wait-free-queue
-  DEP_FILE = CMakeFiles\wait-free-queue.dir\main.cpp.obj.d
+build CMakeFiles/wait-free-queue.dir/tst/main.cpp.obj: CXX_COMPILER__wait-free-queue_unscanned_Debug C$:/programacion/Wait-Free-Queue/tst/main.cpp || cmake_object_order_depends_target_wait-free-queue
+  DEP_FILE = CMakeFiles\wait-free-queue.dir\tst\main.cpp.obj.d
   FLAGS = -g -std=gnu++23 -fdiagnostics-color=always
   OBJECT_DIR = CMakeFiles\wait-free-queue.dir
-  OBJECT_FILE_DIR = CMakeFiles\wait-free-queue.dir
+  OBJECT_FILE_DIR = CMakeFiles\wait-free-queue.dir\tst
 
 
 # =============================================================================
-# Link build statements for EXECUTABLE target wait-free-queue
+# Link build statements for STATIC_LIBRARY target wait-free-queue
 
 
 #############################################
-# Link the executable wait-free-queue.exe
+# Link the static library libwait-free-queue.a
 
-build wait-free-queue.exe: CXX_EXECUTABLE_LINKER__wait-free-queue_Debug CMakeFiles/wait-free-queue.dir/main.cpp.obj
-  FLAGS = -g
-  LINK_LIBRARIES = -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+build libwait-free-queue.a: CXX_STATIC_LIBRARY_LINKER__wait-free-queue_Debug CMakeFiles/wait-free-queue.dir/tst/main.cpp.obj
+  LANGUAGE_COMPILE_FLAGS = -g
   OBJECT_DIR = CMakeFiles\wait-free-queue.dir
-  POST_BUILD = cmd.exe /C "cd /D C:\programacion\Wait-Free-Queue\cmake-build-debug && C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary C:/programacion/Wait-Free-Queue/cmake-build-debug/wait-free-queue.exe -installedDir C:/vcpkg/installed/x64-windows/debug/bin -OutVariable out"
+  POST_BUILD = cd .
   PRE_LINK = cd .
-  TARGET_FILE = wait-free-queue.exe
-  TARGET_IMPLIB = libwait-free-queue.dll.a
-  TARGET_PDB = wait-free-queue.exe.dbg
+  TARGET_FILE = libwait-free-queue.a
+  TARGET_PDB = wait-free-queue.a.dbg
 
 
 #############################################
@@ -99,7 +97,7 @@ build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 # =============================================================================
 # Target aliases.
 
-build wait-free-queue: phony wait-free-queue.exe
+build wait-free-queue: phony libwait-free-queue.a
 
 # =============================================================================
 # Folder targets.
@@ -109,7 +107,7 @@ build wait-free-queue: phony wait-free-queue.exe
 #############################################
 # Folder: C:/programacion/Wait-Free-Queue/cmake-build-debug
 
-build all: phony wait-free-queue.exe
+build all: phony libwait-free-queue.a
 
 # =============================================================================
 # Built-in targets

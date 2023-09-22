@@ -47,7 +47,7 @@ public:
     }
 
 private:
-    int getNextSlotToDequeue(int prev) {
+    inline int getNextSlotToDequeue(int prev) {
         return prev + 1 < nSlots ? ++prev :  0;
     }
 };

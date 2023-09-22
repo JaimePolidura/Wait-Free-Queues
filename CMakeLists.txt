@@ -3,8 +3,10 @@ project(wait-free-queue)
 
 set(CMAKE_CXX_STANDARD 23)
 
-add_executable(${CMAKE_PROJECT_NAME} main.cpp
+add_library(wait-free-queue
         include/SingleProducerSingleConsumer.hpp
         include/shared.h
         include/OrderedMultipleProducerSingleConsumer.hpp
-        include/UnorderedMultipleProducerSingleConsumer.hpp)
+        include/UnorderedMultipleProducerSingleConsumer.hpp
+        tst/main.cpp
+)
