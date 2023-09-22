@@ -1,10 +1,10 @@
 #include <iostream>
 
-#include "shared.h"
+#include "include/shared.h"
 
-#include "SingleProducerSingleConsumer.h"
-#include "OrderedMultipleProducerSingleConsumer.h"
-#include "UnorderedMultipleProducerSingleConsumer.h"
+#include "include/SingleProducerSingleConsumer.hpp"
+#include "include/OrderedMultipleProducerSingleConsumer.hpp"
+#include "include/UnorderedMultipleProducerSingleConsumer.hpp"
 
 void singleWriterSingleReader();
 void orderedMultiWriterSingleReader();

@@ -2,19 +2,22 @@
 
 #include "shared.h"
 
-#include "SingleProducerSingleConsumer.h"
+#include "SingleProducerSingleConsumer.hpp"
 
 template<typename T, std::size_t nSlots>
-class UnorderedMultipleProducerSingleConsumer {
+class OrderedMultipleProducerSingleConsumer {
 private:
     SingleProducerSingleConsumer<T> slots[nSlots]{};
+    std::atomic_uint64_t lastTimestampEnqueued;
 
+    timestamp_t lastTimestampDequeued{};
     int lastSlotDequeued{};
 
 public:
-    UnorderedMultipleProducerSingleConsumer() = default;
+    OrderedMultipleProducerSingleConsumer() = default;
 
     void enqueue(const T& value) {
+        timestamp_t timestampEnqueued = increment_and_get(this->lastTimestampEnqueued);
         int slotIndex = get_thread_id();
 
         if(slotIndex + 1 > nSlots){
@@ -22,7 +25,7 @@ public:
         }
 
         SingleProducerSingleConsumer<T> * queue = &this->slots[slotIndex];
-        queue->enqueue(value);
+        queue->enqueue(value, timestampEnqueued);
     }
 
     std::optional<T> dequeue() {
@@ -31,9 +34,11 @@ public:
 
         do {
             SingleProducerSingleConsumer<T> * queue = &this->slots[actualSlotToDequeue];
-            std::optional<T> dequeuedOptional = queue->dequeue();
+            timestamp_t timestampExpectedToDequeue = this->lastTimestampDequeued + 1;
+            std::optional<T> dequeuedOptional = queue->dequeue(timestampExpectedToDequeue);
 
             if(dequeuedOptional.has_value()){
+                this->lastTimestampDequeued = timestampExpectedToDequeue;
                 this->lastSlotDequeued = actualSlotToDequeue;
 
                 return dequeuedOptional.value();
@@ -47,7 +52,7 @@ public:
     }
 
 private:
-    int getNextSlotToDequeue(int prev) {
+    inline int getNextSlotToDequeue(int prev) {
         return prev + 1 < nSlots ? ++prev :  0;
     }
 };
