@@ -13,13 +13,8 @@ add_library(${CMAKE_PROJECT_NAME}
         include/main.cpp
 )
 
-if(TESTING)
-    set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/CMake")
-    set(VCPKG_ROOT "C:/vcpkg")
-    set(VCPKG_TARGET_TRIPLET "x64-windows")
-    set(CMAKE_TOOLCHAIN_FILE "C:/vcpkg/scripts/buildsystems/vcpkg.cmake")
-    set(CMAKE_PREFIX_PATH "${VCPKG_ROOT}/installed/x64-windows")
+include_directories(include)
 
-    enable_testing()
+if(TESTING)
     add_subdirectory(tst)
 endif()

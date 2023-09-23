@@ -1,6 +1,5 @@
 #include <gtest/gtest.h>
-#include "../include/shared.hpp"
-#include "../include/spsc_queue.hpp"
+#include "spsc_queue.hpp"
 
 TEST(spsc_queue, multithreaded_no_race_condition) {
     jaime::spsc_queue<int> * queue = new jaime::spsc_queue<int>();
