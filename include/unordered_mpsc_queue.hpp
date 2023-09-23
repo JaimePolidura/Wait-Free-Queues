@@ -4,6 +4,8 @@
 
 #include "spsc_queue.hpp"
 
+namespace jaime {
+
 template<typename T, std::size_t nSlots>
 class unordered_mpsc_queue {
 private:
@@ -51,3 +53,5 @@ private:
         return prev + 1 < nSlots ? ++prev :  0;
     }
 };
+
+}

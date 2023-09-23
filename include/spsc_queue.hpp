@@ -2,10 +2,12 @@
 
 #include "shared.h"
 
+namespace jaime {
+
 template<typename T>
-class Node {
+class node {
 public:
-    using atomic_node_ptr_t = std::atomic<Node<T> *>;
+    using atomic_node_ptr_t = std::atomic<node<T> *>;
 
     T value;
     atomic_node_ptr_t prev;
@@ -13,13 +15,13 @@ public:
 
     epoch_t epochEnqueued;
 
-    explicit Node(T value, epoch_t epoch, timestamp_t timestamp):
+    explicit node(T value, epoch_t epoch, timestamp_t timestamp):
             value(value),
             prev(nullptr),
             epochEnqueued(epoch),
             timestamp(timestamp) {}
 
-    explicit Node(epoch_t epoch, timestamp_t timestamp):
+    explicit node(epoch_t epoch, timestamp_t timestamp):
             value(value),
             prev(nullptr),
             epochEnqueued(epoch),
@@ -29,8 +31,8 @@ public:
 template<typename T>
 class spsc_queue {
 private:
-    using node_ptr_t = Node<T> *;
-    using atomic_node_prev_field_ptr = std::atomic<std::atomic<Node<T> *> *>;
+    using node_ptr_t = node<T> *;
+    using atomic_node_prev_field_ptr = std::atomic<std::atomic<node<T> *> *>;
 
     atomic_node_prev_field_ptr head;
     epoch_t lastEpochWritten{};
@@ -41,19 +43,19 @@ private:
 
 public:
     spsc_queue(): maxSizeReleasePool(10) {
-        node_ptr_t sentinel = new Node<T>(lastEpochWritten, 0);
+        node_ptr_t sentinel = new node<T>(lastEpochWritten, 0);
         this->head = &sentinel->prev;
     }
 
     void enqueue(const T& value, const timestamp_t timestamp = 0) {
-        std::atomic<Node<T> *> * headPrevFieldNodePtr = this->head.load();
+        std::atomic<node<T> *> * headPrevFieldNodePtr = this->head.load();
         node_ptr_t headNode = headPrevFieldNodePtr->load();
         this->lastEpochWritten++;
-        node_ptr_t newNode = new Node(value, this->lastEpochWritten, timestamp);
+        node_ptr_t newNode = new node(value, this->lastEpochWritten, timestamp);
 
         if(headNode == nullptr){
-            node_ptr_t sentinel = reinterpret_cast<Node<T> *>(
-                    reinterpret_cast<std::uintptr_t>(headPrevFieldNodePtr) - offsetof(Node<T>, prev)
+            node_ptr_t sentinel = reinterpret_cast<node<T> *>(
+                    reinterpret_cast<std::uintptr_t>(headPrevFieldNodePtr) - offsetof(node<T>, prev)
             );
 
             sentinel->prev = newNode;
@@ -69,7 +71,7 @@ public:
     }
 
     std::optional<T> dequeue(const timestamp_t timestampExpectedToDequeue = 0) {
-        std::atomic<Node<T> *> * headPrevFieldNodePtr = this->head.load();
+        std::atomic<node<T> *> * headPrevFieldNodePtr = this->head.load();
         node_ptr_t headNode = headPrevFieldNodePtr->load();
 
         if(headNode != nullptr &&
@@ -107,3 +109,5 @@ private:
         }
     }
 };
+
+}
