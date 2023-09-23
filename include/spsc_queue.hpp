@@ -27,7 +27,7 @@ public:
 };
 
 template<typename T>
-class SingleProducerSingleConsumer {
+class spsc_queue {
 private:
     using node_ptr_t = Node<T> *;
     using atomic_node_prev_field_ptr = std::atomic<std::atomic<Node<T> *> *>;
@@ -40,7 +40,7 @@ private:
     epoch_t readerEpoch{};
 
 public:
-    SingleProducerSingleConsumer(): maxSizeReleasePool(10) {
+    spsc_queue(): maxSizeReleasePool(10) {
         node_ptr_t sentinel = new Node<T>(lastEpochWritten, 0);
         this->head = &sentinel->prev;
     }

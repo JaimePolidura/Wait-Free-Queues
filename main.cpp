@@ -2,9 +2,9 @@
 
 #include "include/shared.h"
 
-#include "include/SingleProducerSingleConsumer.hpp"
-#include "include/OrderedMultipleProducerSingleConsumer.hpp"
-#include "include/UnorderedMultipleProducerSingleConsumer.hpp"
+#include "include/spsc_queue.hpp"
+#include "include/ordered_mpsc_queue.hpp"
+#include "include/unordered_mpsc_queue.hpp"
 
 void singleWriterSingleReader();
 void orderedMultiWriterSingleReader();

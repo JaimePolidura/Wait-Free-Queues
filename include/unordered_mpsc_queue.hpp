@@ -2,26 +2,26 @@
 
 #include "shared.h"
 
-#include "SingleProducerSingleConsumer.hpp"
+#include "spsc_queue.hpp"
 
 template<typename T, std::size_t nSlots>
-class UnorderedMultipleProducerSingleConsumer {
+class unordered_mpsc_queue {
 private:
-    SingleProducerSingleConsumer<T> slots[nSlots]{};
+    spsc_queue<T> slots[nSlots]{};
 
     int lastSlotDequeued{};
 
 public:
-    UnorderedMultipleProducerSingleConsumer() = default;
+    unordered_mpsc_queue() = default;
 
     void enqueue(const T& value) {
         int slotIndex = get_thread_id();
 
         if(slotIndex + 1 > nSlots){
-            throw std::out_of_range("Increase OrderedMultipleProducerSingleConsumer size");
+            throw std::out_of_range("Increase ordered_mpsc_queue size");
         }
 
-        SingleProducerSingleConsumer<T> * queue = &this->slots[slotIndex];
+        spsc_queue<T> * queue = &this->slots[slotIndex];
         queue->enqueue(value);
     }
 
@@ -30,7 +30,7 @@ public:
         int actualSlotToDequeue = startingSlotToDequeue;
 
         do {
-            SingleProducerSingleConsumer<T> * queue = &this->slots[actualSlotToDequeue];
+            spsc_queue<T> * queue = &this->slots[actualSlotToDequeue];
             std::optional<T> dequeuedOptional = queue->dequeue();
 
             if(dequeuedOptional.has_value()){

@@ -9,16 +9,13 @@
 #include <iostream>
 #include <chrono>
 #include <cstdint>
-#include <stdint.h>
 #include <cstdlib>
 #include <ctime>
 #include <functional>
 #include <exception>
 #include <cstdio>
-#include <tgmath.h>
 #include <optional>
 #include <filesystem>
-#include <math.h>
 #include <regex>
 #include <cstring>
 

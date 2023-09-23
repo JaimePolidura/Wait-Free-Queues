@@ -73,6 +73,18 @@ build libwait-free-queue.a: CXX_STATIC_LIBRARY_LINKER__wait-free-queue_Debug CMa
 
 
 #############################################
+# Utility command for test
+
+build CMakeFiles/test.util: CUSTOM_COMMAND
+  COMMAND = cmd.exe /C "cd /D C:\programacion\Wait-Free-Queue\cmake-build-debug && C:\Users\jaime\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\232.9559.58\bin\cmake\win\x64\bin\ctest.exe --force-new-ctest-process "
+  DESC = Running tests...
+  pool = console
+  restat = 1
+
+build test: phony CMakeFiles/test.util
+
+
+#############################################
 # Utility command for edit_cache
 
 build CMakeFiles/edit_cache.util: CUSTOM_COMMAND
@@ -95,7 +107,94 @@ build CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
 build rebuild_cache: phony CMakeFiles/rebuild_cache.util
 
 # =============================================================================
+# Write statements declared in CMakeLists.txt:
+# C:/programacion/Wait-Free-Queue/CMakeLists.txt
+# =============================================================================
+
+# =============================================================================
+# Object build statements for EXECUTABLE target tst
+
+
+#############################################
+# Order-only phony target for tst
+
+build cmake_object_order_depends_target_tst: phony || cmake_object_order_depends_target_wait-free-queue
+
+build tst/CMakeFiles/tst.dir/main.cpp.obj: CXX_COMPILER__tst_unscanned_Debug C$:/programacion/Wait-Free-Queue/tst/main.cpp || cmake_object_order_depends_target_tst
+  DEFINES = -DGTEST_LINKED_AS_SHARED_LIBRARY=1
+  DEP_FILE = tst\CMakeFiles\tst.dir\main.cpp.obj.d
+  FLAGS = -g -std=gnu++23 -fdiagnostics-color=always
+  INCLUDES = -isystem C:/vcpkg/installed/x64-windows/include
+  OBJECT_DIR = tst\CMakeFiles\tst.dir
+  OBJECT_FILE_DIR = tst\CMakeFiles\tst.dir
+
+build tst/CMakeFiles/tst.dir/SingleProducerSingleConsumerTest.cpp.obj: CXX_COMPILER__tst_unscanned_Debug C$:/programacion/Wait-Free-Queue/tst/SingleProducerSingleConsumerTest.cpp || cmake_object_order_depends_target_tst
+  DEFINES = -DGTEST_LINKED_AS_SHARED_LIBRARY=1
+  DEP_FILE = tst\CMakeFiles\tst.dir\SingleProducerSingleConsumerTest.cpp.obj.d
+  FLAGS = -g -std=gnu++23 -fdiagnostics-color=always
+  INCLUDES = -isystem C:/vcpkg/installed/x64-windows/include
+  OBJECT_DIR = tst\CMakeFiles\tst.dir
+  OBJECT_FILE_DIR = tst\CMakeFiles\tst.dir
+
+
+# =============================================================================
+# Link build statements for EXECUTABLE target tst
+
+
+#############################################
+# Link the executable tst\tst.exe
+
+build tst/tst.exe: CXX_EXECUTABLE_LINKER__tst_Debug tst/CMakeFiles/tst.dir/main.cpp.obj tst/CMakeFiles/tst.dir/SingleProducerSingleConsumerTest.cpp.obj | C$:/vcpkg/installed/x64-windows/debug/lib/manual-link/gtest_main.lib C$:/vcpkg/installed/x64-windows/debug/lib/gmock.lib C$:/vcpkg/installed/x64-windows/debug/lib/manual-link/gmock_main.lib libwait-free-queue.a C$:/vcpkg/installed/x64-windows/debug/lib/gtest.lib || libwait-free-queue.a
+  FLAGS = -g
+  LINK_LIBRARIES = C:/vcpkg/installed/x64-windows/debug/lib/manual-link/gtest_main.lib  C:/vcpkg/installed/x64-windows/debug/lib/gmock.lib  C:/vcpkg/installed/x64-windows/debug/lib/manual-link/gmock_main.lib  libwait-free-queue.a  C:/vcpkg/installed/x64-windows/debug/lib/gtest.lib  -lkernel32 -luser32 -lgdi32 -lwinspool -lshell32 -lole32 -loleaut32 -luuid -lcomdlg32 -ladvapi32
+  OBJECT_DIR = tst\CMakeFiles\tst.dir
+  POST_BUILD = cmd.exe /C "cd /D C:\programacion\Wait-Free-Queue\cmake-build-debug\tst && C:\Windows\System32\WindowsPowerShell\v1.0\powershell.exe -noprofile -executionpolicy Bypass -file C:/vcpkg/scripts/buildsystems/msbuild/applocal.ps1 -targetBinary C:/programacion/Wait-Free-Queue/cmake-build-debug/tst/tst.exe -installedDir C:/vcpkg/installed/x64-windows/debug/bin -OutVariable out"
+  PRE_LINK = cd .
+  TARGET_FILE = tst\tst.exe
+  TARGET_IMPLIB = tst\libtst.dll.a
+  TARGET_PDB = tst.exe.dbg
+
+
+#############################################
+# Utility command for test
+
+build tst/CMakeFiles/test.util: CUSTOM_COMMAND
+  COMMAND = cmd.exe /C "cd /D C:\programacion\Wait-Free-Queue\cmake-build-debug\tst && C:\Users\jaime\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\232.9559.58\bin\cmake\win\x64\bin\ctest.exe --force-new-ctest-process "
+  DESC = Running tests...
+  pool = console
+  restat = 1
+
+build tst/test: phony tst/CMakeFiles/test.util
+
+
+#############################################
+# Utility command for edit_cache
+
+build tst/CMakeFiles/edit_cache.util: CUSTOM_COMMAND
+  COMMAND = cmd.exe /C "cd /D C:\programacion\Wait-Free-Queue\cmake-build-debug\tst && C:\Users\jaime\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\232.9559.58\bin\cmake\win\x64\bin\cmake.exe -E echo "No interactive CMake dialog available.""
+  DESC = No interactive CMake dialog available...
+  restat = 1
+
+build tst/edit_cache: phony tst/CMakeFiles/edit_cache.util
+
+
+#############################################
+# Utility command for rebuild_cache
+
+build tst/CMakeFiles/rebuild_cache.util: CUSTOM_COMMAND
+  COMMAND = cmd.exe /C "cd /D C:\programacion\Wait-Free-Queue\cmake-build-debug\tst && C:\Users\jaime\AppData\Local\JetBrains\Toolbox\apps\CLion\ch-0\232.9559.58\bin\cmake\win\x64\bin\cmake.exe --regenerate-during-build -SC:\programacion\Wait-Free-Queue -BC:\programacion\Wait-Free-Queue\cmake-build-debug"
+  DESC = Running CMake to regenerate build system...
+  pool = console
+  restat = 1
+
+build tst/rebuild_cache: phony tst/CMakeFiles/rebuild_cache.util
+
+# =============================================================================
 # Target aliases.
+
+build tst: phony tst/tst.exe
+
+build tst.exe: phony tst/tst.exe
 
 build wait-free-queue: phony libwait-free-queue.a
 
@@ -107,7 +206,14 @@ build wait-free-queue: phony libwait-free-queue.a
 #############################################
 # Folder: C:/programacion/Wait-Free-Queue/cmake-build-debug
 
-build all: phony libwait-free-queue.a
+build all: phony libwait-free-queue.a tst/all
+
+# =============================================================================
+
+#############################################
+# Folder: C:/programacion/Wait-Free-Queue/cmake-build-debug/tst
+
+build tst/all: phony tst/tst.exe
 
 # =============================================================================
 # Built-in targets
@@ -116,14 +222,14 @@ build all: phony libwait-free-queue.a
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCXXInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCommonLanguageInclude.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeDependentOption.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeGenericSystem.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeInitializeConfigs.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeLanguageInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeRCInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeSystemSpecificInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeSystemSpecificInitialize.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/CMakeCommonCompilerMacros.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/GNU-C.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/GNU-CXX.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/GNU.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-C-ABI.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-C.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-CXX-ABI.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-CXX.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-windres.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/WindowsPaths.cmake C$:/programacion/Wait-Free-Queue/CMakeLists.txt C$:/vcpkg/scripts/buildsystems/vcpkg.cmake CMakeCache.txt CMakeFiles/3.26.4/CMakeCCompiler.cmake CMakeFiles/3.26.4/CMakeCXXCompiler.cmake CMakeFiles/3.26.4/CMakeRCCompiler.cmake CMakeFiles/3.26.4/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCXXInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCommonLanguageInclude.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeDependentOption.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeFindDependencyMacro.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeGenericSystem.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeInitializeConfigs.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeLanguageInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeRCInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeSystemSpecificInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeSystemSpecificInitialize.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/CMakeCommonCompilerMacros.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/GNU-C.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/GNU-CXX.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/GNU.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-C-ABI.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-C.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-CXX-ABI.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-CXX.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-windres.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/WindowsPaths.cmake C$:/programacion/Wait-Free-Queue/CMakeLists.txt C$:/programacion/Wait-Free-Queue/tst/CMakeLists.txt C$:/vcpkg/installed/x64-windows/share/gtest/GTestConfig.cmake C$:/vcpkg/installed/x64-windows/share/gtest/GTestConfigVersion.cmake C$:/vcpkg/installed/x64-windows/share/gtest/GTestTargets-debug.cmake C$:/vcpkg/installed/x64-windows/share/gtest/GTestTargets-release.cmake C$:/vcpkg/installed/x64-windows/share/gtest/GTestTargets.cmake C$:/vcpkg/scripts/buildsystems/vcpkg.cmake CMakeCache.txt CMakeFiles/3.26.4/CMakeCCompiler.cmake CMakeFiles/3.26.4/CMakeCXXCompiler.cmake CMakeFiles/3.26.4/CMakeRCCompiler.cmake CMakeFiles/3.26.4/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCXXInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCommonLanguageInclude.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeDependentOption.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeGenericSystem.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeInitializeConfigs.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeLanguageInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeRCInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeSystemSpecificInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeSystemSpecificInitialize.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/CMakeCommonCompilerMacros.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/GNU-C.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/GNU-CXX.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/GNU.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-C-ABI.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-C.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-CXX-ABI.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-CXX.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-windres.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/WindowsPaths.cmake C$:/programacion/Wait-Free-Queue/CMakeLists.txt C$:/vcpkg/scripts/buildsystems/vcpkg.cmake CMakeCache.txt CMakeFiles/3.26.4/CMakeCCompiler.cmake CMakeFiles/3.26.4/CMakeCXXCompiler.cmake CMakeFiles/3.26.4/CMakeRCCompiler.cmake CMakeFiles/3.26.4/CMakeSystem.cmake: phony
+build C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCXXInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeCommonLanguageInclude.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeDependentOption.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeFindDependencyMacro.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeGenericSystem.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeInitializeConfigs.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeLanguageInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeRCInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeSystemSpecificInformation.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/CMakeSystemSpecificInitialize.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/CMakeCommonCompilerMacros.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/GNU-C.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/GNU-CXX.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Compiler/GNU.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-C-ABI.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-C.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-CXX-ABI.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU-CXX.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-GNU.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows-windres.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/Windows.cmake C$:/Users/jaime/AppData/Local/JetBrains/Toolbox/apps/CLion/ch-0/232.9559.58/bin/cmake/win/x64/share/cmake-3.26/Modules/Platform/WindowsPaths.cmake C$:/programacion/Wait-Free-Queue/CMakeLists.txt C$:/programacion/Wait-Free-Queue/tst/CMakeLists.txt C$:/vcpkg/installed/x64-windows/share/gtest/GTestConfig.cmake C$:/vcpkg/installed/x64-windows/share/gtest/GTestConfigVersion.cmake C$:/vcpkg/installed/x64-windows/share/gtest/GTestTargets-debug.cmake C$:/vcpkg/installed/x64-windows/share/gtest/GTestTargets-release.cmake C$:/vcpkg/installed/x64-windows/share/gtest/GTestTargets.cmake C$:/vcpkg/scripts/buildsystems/vcpkg.cmake CMakeCache.txt CMakeFiles/3.26.4/CMakeCCompiler.cmake CMakeFiles/3.26.4/CMakeCXXCompiler.cmake CMakeFiles/3.26.4/CMakeRCCompiler.cmake CMakeFiles/3.26.4/CMakeSystem.cmake: phony
 
 
 #############################################
