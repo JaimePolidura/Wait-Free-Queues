@@ -1,6 +1,6 @@
 #pragma once
 
-#include "shared.h"
+#include "shared.hpp"
 
 namespace jaime {
 

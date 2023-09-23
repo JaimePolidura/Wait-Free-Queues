@@ -1,6 +1,6 @@
 #include <iostream>
 
-#include "include/shared.h"
+#include "include/shared.hpp"
 
 #include "include/spsc_queue.hpp"
 #include "include/ordered_mpsc_queue.hpp"
