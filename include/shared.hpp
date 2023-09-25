@@ -42,6 +42,9 @@ namespace jaime::utils {
     T increment_and_get(std::atomic<T>& atomic);
 
     void spin_wait_on(const std::atomic_bool& toWait, bool value);
+
+    template<typename T>
+    void zeroMemory(T * ptr);
 }
 
 template<typename T>
@@ -53,4 +56,14 @@ T jaime::utils::increment_and_get(std::atomic<T> &atomic) {
     }while(!atomic.compare_exchange_weak(last, last + 1));
 
     return ++last;
+}
+
+template<typename T>
+void jaime::utils::zeroMemory(T *ptr) {
+    uint8_t * actual = (uint8_t *) ptr;
+
+    for(int i = 0; i < sizeof(T); i++){
+        *actual = 0x00;
+        actual += i;
+    }
 }

@@ -12,7 +12,7 @@ add_library(${CMAKE_PROJECT_NAME}
         include/unordered_mpsc_queue.hpp
         include/main.cpp
         examples/main.cpp
-        include/spsc_object_pool.h
+        include/spsc_heap_object_pool.h
         include/shared.cpp
 )
 

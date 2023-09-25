@@ -1,6 +1,6 @@
 #include "unordered_mpsc_queue.hpp"
 #include "ordered_mpsc_queue.hpp"
-#include "spsc_object_pool.h"
+#include "spsc_heap_object_pool.h"
 #include "spsc_queue.hpp"
 
 void singleWriterSingleReader();
@@ -127,7 +127,7 @@ void singleWriterSingleReader() {
 }
 
 void objectPool() {
-    jaime::spsc_object_pool<int *> * pool = new jaime::spsc_object_pool<int *>([](){return new int();});
+    jaime::spsc_heap_object_pool<int> * pool = new jaime::spsc_heap_object_pool<int>();
     pool->populate(10);
 
     std::thread producer = std::thread([pool](){

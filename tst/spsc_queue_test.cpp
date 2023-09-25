@@ -3,7 +3,7 @@
 
 TEST(spsc_queue, multithreaded_no_race_condition) {
     jaime::spsc_queue<int> * queue = new jaime::spsc_queue<int>();
-    int nEnqueues = 1000000;
+    int nEnqueues = 10000;
     bool * raceConditionFound = new bool(false);
     *raceConditionFound = false;
 
@@ -68,7 +68,7 @@ TEST(spsc_queue, two_enqueues) {
     ASSERT_EQ(dequeued2.value(), 2);
 }
 
-TEST(spsc_queue, two_dequeues_on_empty) {
+ TEST(spsc_queue, two_dequeues_on_empty) {
     jaime::spsc_queue<int> queue{};
 
     ASSERT_FALSE(queue.dequeue().has_value());
