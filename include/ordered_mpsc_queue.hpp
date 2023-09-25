@@ -19,8 +19,8 @@ public:
     ordered_mpsc_queue() = default;
 
     void enqueue(const T& value) {
-        timestamp_t timestampEnqueued = increment_and_get(this->lastTimestampEnqueued);
-        int slotIndex = get_thread_id();
+        timestamp_t timestampEnqueued =  jaime::utils::increment_and_get(this->lastTimestampEnqueued);
+        int slotIndex = jaime::utils::get_thread_id();
 
         if(slotIndex + 1 > nSlots){
             throw std::out_of_range("Increase ordered_mpsc_queue size");

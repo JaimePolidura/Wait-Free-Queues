@@ -47,7 +47,7 @@ public:
         this->consumers.store(producersQueue, std::memory_order_release);
         this->producers.store(consumersQueue, std::memory_order_release);
 
-        spin_wait_on(this->producerPuttingValue);
+        jaime::utils::spin_wait_on(&this->producerPuttingValue, true);
 
         return take();
     }

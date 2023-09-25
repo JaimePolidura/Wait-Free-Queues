@@ -11,7 +11,9 @@ void objectPool();
 int main() {
 //    unorderedMultiWriterSingleReader();
 //    orderedMultiWriterSingleReader();
-    singleWriterSingleReader();
+//    singleWriterSingleReader();
+
+    objectPool();
 
     return 0;
 }
@@ -128,8 +130,20 @@ void objectPool() {
     jaime::spsc_object_pool<int *> * pool = new jaime::spsc_object_pool<int *>([](){return new int();});
     pool->populate(10);
 
-    std::thread producer = std::thread([pool]{
-        pool->
+    std::thread producer = std::thread([pool](){
+        for(int i = 0; i < 100; i++){
+            pool->put(new int(i));
+        }
     });
 
+    std::thread consumer = std::thread([pool](){
+        for(int i = 0; i < 100; i++){
+            int * ptr = pool->take();
+            std::cout << *ptr << std::endl;
+            pool->put(ptr);
+        }
+    });
+
+    producer.join();
+    consumer.join();
 }

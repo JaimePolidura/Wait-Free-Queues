@@ -13,6 +13,7 @@ add_library(${CMAKE_PROJECT_NAME}
         include/main.cpp
         examples/main.cpp
         include/spsc_object_pool.h
+        include/shared.cpp
 )
 
 include_directories(include)

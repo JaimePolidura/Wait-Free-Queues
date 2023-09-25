@@ -35,16 +35,17 @@
 typedef uint64_t epoch_t;
 typedef uint64_t timestamp_t;
 
-int get_thread_id() {
-    std::stringstream ss;
-    ss << std::this_thread::get_id();
-    uint64_t slotIndex = std::stoull(ss.str());
+namespace jaime::utils {
+    int get_thread_id();
 
-    return static_cast<int>(slotIndex);
+    template<typename T>
+    T increment_and_get(std::atomic<T>& atomic);
+
+    void spin_wait_on(const std::atomic_bool& toWait, bool value);
 }
 
 template<typename T>
-T increment_and_get(std::atomic<T>& atomic) {
+T jaime::utils::increment_and_get(std::atomic<T> &atomic) {
     T last;
 
     do {
@@ -52,10 +53,4 @@ T increment_and_get(std::atomic<T>& atomic) {
     }while(!atomic.compare_exchange_weak(last, last + 1));
 
     return ++last;
-}
-
-void spin_wait_on(std::atomic_bool toWait, bool value) {
-    while (toWait.load(std::memory_order_acquire) != value){
-        std::this_thread::yield();
-    }
 }
