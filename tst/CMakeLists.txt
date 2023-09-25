@@ -22,7 +22,6 @@ enable_testing()
 
 setup_vcpkg()
 
-include_directories(${CMAKE_PREFIX_PATH}/include)
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 add_executable(tst main.cpp spsc_queue_test.cpp)

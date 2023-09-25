@@ -13,18 +13,14 @@ public:
     atomic_node_ptr_t prev;
     timestamp_t timestamp;
 
-    epoch_t epochEnqueued;
-
-    explicit node(T value, epoch_t epoch, timestamp_t timestamp):
+    explicit node(T value, timestamp_t timestamp):
             value(value),
             prev(nullptr),
-            epochEnqueued(epoch),
             timestamp(timestamp) {}
 
-    explicit node(epoch_t epoch, timestamp_t timestamp):
+    explicit node(timestamp_t timestamp):
             value(value),
             prev(nullptr),
-            epochEnqueued(epoch),
             timestamp(timestamp) {}
 };
 
@@ -35,39 +31,34 @@ private:
     using atomic_node_prev_field_ptr = std::atomic<std::atomic<node<T> *> *>;
 
     atomic_node_prev_field_ptr head;
-    epoch_t lastEpochWritten{};
 
     std::queue<node_ptr_t> releasePool;
     uint32_t maxSizeReleasePool;
-    epoch_t readerEpoch{};
 
 public:
     spsc_queue(): maxSizeReleasePool(10) {
-        node_ptr_t sentinel = new node<T>(lastEpochWritten, 0);
+        node_ptr_t sentinel = new node<T>(0);
         this->head = &sentinel->prev;
     }
 
     void enqueue(const T& value, const timestamp_t timestamp = 0) {
-        std::atomic<node<T> *> * headPrevFieldNodePtr = this->head.load();
-        node_ptr_t headNode = headPrevFieldNodePtr->load();
-        this->lastEpochWritten++;
-        node_ptr_t newNode = new node(value, this->lastEpochWritten, timestamp);
+        std::atomic<node<T> *> * headPrevFieldNodePtr = this->head.load(std::memory_order_acquire);
+        node_ptr_t headNode = headPrevFieldNodePtr->load(std::memory_order_acquire);
+        node_ptr_t newNode = new node(value, timestamp);
 
         if(headNode == nullptr){
-            node_ptr_t sentinel = reinterpret_cast<node<T> *>(
-                    reinterpret_cast<std::uintptr_t>(headPrevFieldNodePtr) - offsetof(node<T>, prev)
-            );
+            node_ptr_t sentinel = this->getNodePtrFromPrevNodeField(headPrevFieldNodePtr);
 
-            sentinel->prev = newNode;
+            sentinel->prev.store(newNode, std::memory_order_release);
 
             return;
         }
 
-        while(headNode->prev.load() != nullptr){
-            headNode = headNode->prev.load();
+        while(headNode->prev.load(std::memory_order_acquire) != nullptr){
+            headNode = headNode->prev.load(std::memory_order_acquire);
         }
 
-        headNode->prev = newNode;
+        headNode->prev.store(newNode, std::memory_order_release);
     }
 
     std::optional<T> dequeue(const timestamp_t timestampExpectedToDequeue = 0) {
@@ -79,10 +70,9 @@ public:
             headNode->timestamp == timestampExpectedToDequeue)){
 
             T value = headNode->value;
-            this->head = &headNode->prev;
+            this->head.store(&headNode->prev, std::memory_order_release);
 
             releasePool.push(headNode);
-            this->readerEpoch++;
 
             if(this->releasePool.size() > this->maxSizeReleasePool){
                 this->tryRelease();
@@ -97,9 +87,12 @@ public:
 private:
     void tryRelease() {
         node_ptr_t toRelease = releasePool.front();
-        epoch_t lastReaderEpoch = this->readerEpoch;
 
-        while (!releasePool.empty() && lastReaderEpoch > toRelease->epochEnqueued) {
+        while (!releasePool.empty()) {
+            if(this->getNodePtrFromPrevNodeField(this->head.load(std::memory_order_acquire)) == toRelease){
+                break;
+            }
+
             releasePool.pop();
             delete toRelease;
 
@@ -108,6 +101,13 @@ private:
             }
         }
     }
+
+    node_ptr_t getNodePtrFromPrevNodeField(std::atomic<node<T> *> * ptrPrev) {
+        return reinterpret_cast<node<T> *>(
+                reinterpret_cast<std::uintptr_t>(ptrPrev) - offsetof(node<T>, prev)
+        );
+    }
+
 };
 
 }

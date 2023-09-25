@@ -3,8 +3,9 @@
 
 TEST(spsc_queue, multithreaded_no_race_condition) {
     jaime::spsc_queue<int> * queue = new jaime::spsc_queue<int>();
-    int nEnqueues = 0;
+    int nEnqueues = 1000000;
     bool * raceConditionFound = new bool(false);
+    *raceConditionFound = false;
 
     std::thread producer = std::thread{[queue, nEnqueues](){
         for(int i = 0; i < nEnqueues; i++){
@@ -37,7 +38,7 @@ TEST(spsc_queue, multithreaded_no_race_condition) {
     producer.join();
     consumer.join();
 
-    ASSERT_FALSE(raceConditionFound);
+    ASSERT_FALSE(*raceConditionFound);
 }
 
 TEST(spsc_queue, one_enqueue) {
@@ -64,7 +65,7 @@ TEST(spsc_queue, two_enqueues) {
     ASSERT_FALSE(dequeued3.has_value());
 
     ASSERT_EQ(dequeued1.value(), 1);
-    ASSERT_EQ(dequeued1.value(), 2);
+    ASSERT_EQ(dequeued2.value(), 2);
 }
 
 TEST(spsc_queue, two_dequeues_on_empty) {

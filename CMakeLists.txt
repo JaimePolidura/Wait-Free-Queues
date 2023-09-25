@@ -11,9 +11,13 @@ add_library(${CMAKE_PROJECT_NAME}
         include/ordered_mpsc_queue.hpp
         include/unordered_mpsc_queue.hpp
         include/main.cpp
+        examples/main.cpp
+        include/spsc_object_pool.h
 )
 
 include_directories(include)
+
+add_subdirectory(examples)
 
 if(TESTING)
     add_subdirectory(tst)

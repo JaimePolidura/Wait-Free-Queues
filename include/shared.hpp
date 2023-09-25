@@ -53,3 +53,9 @@ T increment_and_get(std::atomic<T>& atomic) {
 
     return ++last;
 }
+
+void spin_wait_on(std::atomic_bool toWait, bool value) {
+    while (toWait.load(std::memory_order_acquire) != value){
+        std::this_thread::yield();
+    }
+}
