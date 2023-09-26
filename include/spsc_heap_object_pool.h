@@ -1,6 +1,8 @@
 #pragma once
 
-#include "shared.hpp"
+#include "utils/utils.hpp"
+
+#include "utils/spin_lock.hpp"
 
 namespace jaime {
 
@@ -10,7 +12,7 @@ private:
     std::atomic<std::queue<T *> *> producers;
     std::atomic<std::queue<T *> *> consumers;
 
-    std::atomic_bool producerPuttingValue;
+    jaime::utils::spin_lock producer_putting_value_spin_lock;
 
 public:
     explicit spsc_heap_object_pool() {
@@ -37,30 +39,28 @@ public:
         bool consumersEmpty = consumersQueue->empty();
         bool producersEmpty = producersQueue->empty();
 
-        if(!consumersEmpty){
-            return this->popFromQueue(consumersQueue);
-        }
         if(consumersEmpty && producersEmpty) {
             return new T(args...);
+        }
+        if(!consumersEmpty){
+            return this->popFromQueue(consumersQueue);
         }
 
         this->consumers.store(producersQueue, std::memory_order_release);
         this->producers.store(consumersQueue, std::memory_order_release);
 
-        jaime::utils::spin_wait_on(&this->producerPuttingValue, true);
-        
-        return this->popFromQueue(producersQueue); //Already swapped
+        this->producer_putting_value_spin_lock.wait_until_unlocked();
+
+        return this->takeOrCreateWithArgs(args...);
     }
 
     void put(T * toPut) {
-        producerPuttingValue.store(true, std::memory_order_release);
-
-        std::atomic_thread_fence(std::memory_order_acquire);
+        this->producer_putting_value_spin_lock.lock();
 
         std::queue<T *> * producersQueue = this->producers.load(std::memory_order_acquire);
         producersQueue->push(toPut);
 
-        producerPuttingValue.store(false, std::memory_order_release);
+        this->producer_putting_value_spin_lock.unlock();
     }
 
 private:
@@ -70,7 +70,6 @@ private:
 
         return item;
     }
-
 };
 
 }

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "spsc_heap_object_pool.h"
-#include "shared.hpp"
+#include "utils/utils.hpp"
 
 namespace jaime {
 
@@ -67,7 +67,7 @@ public:
     std::optional<T> dequeue(const timestamp_t timestampExpectedToDequeue = 0) {
         std::atomic<node<T> *> * headPrevFieldNodePtr = this->head.load();
         node_ptr_t headNode = headPrevFieldNodePtr->load();
-fron
+
         if(headNode != nullptr &&
            (timestampExpectedToDequeue == 0 ||
             headNode->timestamp == timestampExpectedToDequeue)){

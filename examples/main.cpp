@@ -51,7 +51,7 @@ void unorderedMultiWriterSingleReader() {
             if(!dequeued.has_value()){
                 std::this_thread::yield();
             }else{
-                std::cout << "[READER] Dequeued from " << dequeued.value().enqueued_by << " of value: " << dequeued.value().value << std::endl;
+                std::cout << "[READER] Dequeued from " << dequeued.value().enqueued_by << " of locked: " << dequeued.value().value << std::endl;
             }
         }
     });
@@ -90,7 +90,7 @@ void orderedMultiWriterSingleReader() {
             if(!dequeued.has_value()){
                 std::this_thread::yield();
             }else{
-                std::cout << "[READER] Dequeued from " << dequeued.value().enqueued_by << " of value: " << dequeued.value().value << std::endl;
+                std::cout << "[READER] Dequeued from " << dequeued.value().enqueued_by << " of locked: " << dequeued.value().value << std::endl;
             }
         }
     });
@@ -117,7 +117,7 @@ void singleWriterSingleReader() {
             if(!dequeued.has_value()){
                 std::this_thread::yield();
             }else{
-//                std::cout << "[READER] Dequeued value " << dequeued.value() << std::endl;
+//                std::cout << "[READER] Dequeued locked " << dequeued.locked() << std::endl;
             }
         }
     });

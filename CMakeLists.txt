@@ -7,13 +7,15 @@ set(CMAKE_CXX_STANDARD 23)
 
 add_library(${CMAKE_PROJECT_NAME}
         include/spsc_queue.hpp
-        include/shared.hpp
+        include/utils/utils.hpp
         include/ordered_mpsc_queue.hpp
         include/unordered_mpsc_queue.hpp
         include/main.cpp
         examples/main.cpp
         include/spsc_heap_object_pool.h
-        include/shared.cpp
+        include/utils/shared.cpp
+        include/utils/spin_lock.hpp
+        include/utils/spin_lock.hpp
 )
 
 include_directories(include)

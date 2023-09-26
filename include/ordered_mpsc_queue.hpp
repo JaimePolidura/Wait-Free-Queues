@@ -1,6 +1,6 @@
 #pragma once
 
-#include "shared.hpp"
+#include "utils/utils.hpp"
 
 #include "spsc_queue.hpp"
 

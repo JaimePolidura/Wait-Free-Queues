@@ -41,8 +41,6 @@ namespace jaime::utils {
     template<typename T>
     T increment_and_get(std::atomic<T>& atomic);
 
-    void spin_wait_on(const std::atomic_bool& toWait, bool value);
-
     template<typename T>
     void zeroMemory(T * ptr);
 }
