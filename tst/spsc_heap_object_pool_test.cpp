@@ -2,7 +2,7 @@
 #include "spsc_heap_object_pool.h"
 
 TEST(spsc_object_pool, ThreadedMultiplePutMultipleTake) {
-    jaime::spsc_heap_object_pool<int> * pool = new jaime::spsc_heap_object_pool<int>();
+    std::shared_ptr<jaime::spsc_heap_object_pool<int>> pool = std::make_shared<jaime::spsc_heap_object_pool<int>>();
     int nTimes = 100000;
     bool * raceCondition = new bool(false);
     int * raceConditionLastValue = new int(0);
@@ -15,7 +15,7 @@ TEST(spsc_object_pool, ThreadedMultiplePutMultipleTake) {
     });
 
     std::thread consumer = std::thread([pool, nTimes, raceCondition, raceConditionLastValue, raceConditionValue](){
-        auto lastValue = 0;
+        auto lastValue = -1;
 
         for(int i = 0; i < nTimes; i++){
             auto value = *pool->takeOrCreateWithArgs(-1);
@@ -36,8 +36,7 @@ TEST(spsc_object_pool, ThreadedMultiplePutMultipleTake) {
     producer.join();
     consumer.join();
 
-    if(*raceCondition){
-        std::cout << "porro" << std::endl;
+    if(*raceCondition){ //Just for set up a debug point
         nTimes++;
     }
 
