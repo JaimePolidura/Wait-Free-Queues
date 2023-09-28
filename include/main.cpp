@@ -1,5 +1,5 @@
 /*
  *
- * Empty otherwise, cmake will fail
+ * Empty otherwise cmake will fail
  *
  */

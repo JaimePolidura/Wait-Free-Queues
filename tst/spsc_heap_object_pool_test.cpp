@@ -3,7 +3,7 @@
 
 TEST(spsc_object_pool, ThreadedMultiplePutMultipleTake) {
     std::shared_ptr<jaime::spsc_heap_object_pool<int>> pool = std::make_shared<jaime::spsc_heap_object_pool<int>>();
-    int nTimes = 100000;
+    int nTimes = 10000000;
     bool * raceCondition = new bool(false);
     int * raceConditionLastValue = new int(0);
     int * raceConditionValue = new int(0);

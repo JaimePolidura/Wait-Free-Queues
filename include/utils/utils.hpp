@@ -51,7 +51,7 @@ T jaime::utils::increment_and_get(std::atomic<T> &atomic) {
 
     do {
         last = atomic.load();
-    }while(!atomic.compare_exchange_weak(last, last + 1));
+    }while(!atomic.compare_exchange_weak(last, last + 1, std::memory_order_release));
 
     return ++last;
 }
