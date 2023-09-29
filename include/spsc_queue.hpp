@@ -36,7 +36,7 @@ private:
 
     atomic_node_prev_field_ptr head;
     jaime::spsc_heap_object_pool<node<T>> node_pool;
-    
+
     uint8_t cache_line_padding[64];
     node_ptr_t last;
 
@@ -56,6 +56,7 @@ public:
             node_ptr_t head_prev_field_node_ptr_holder = this->get_node_ptr_from_prev_node_field(head_prev_field_node_ptr);
             head_prev_field_node_ptr_holder->prev.store(new_node, std::memory_order_release); //Updating head
             this->last = new_node;
+
             return;
         }
 

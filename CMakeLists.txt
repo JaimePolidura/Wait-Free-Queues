@@ -13,9 +13,10 @@ add_library(${CMAKE_PROJECT_NAME}
         include/main.cpp
         benchmarks/main.cpp
         include/spsc_heap_object_pool.h
-        include/utils/shared.cpp
+        include/utils/utils.cpp
         include/utils/spin_lock.hpp
         include/utils/spin_lock.hpp
+        include/utils/per_thread_slot_array_allocator.h
 )
 
 include_directories(include)
