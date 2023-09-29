@@ -35,9 +35,10 @@ private:
     using atomic_node_prev_field_ptr = std::atomic<std::atomic<node_ptr_t> *>;
 
     atomic_node_prev_field_ptr head;
-    node_ptr_t last;
-
     jaime::spsc_heap_object_pool<node<T>> node_pool;
+    
+    uint8_t cache_line_padding[64];
+    node_ptr_t last;
 
 public:
     spsc_queue() {
@@ -58,7 +59,7 @@ public:
             return;
         }
 
-        this->last->prev.store(new_node, std::memory_order_release);
+        this->last->prev.store(new_node, std::memory_order_relaxed);
         this->last = new_node;
     }
 
