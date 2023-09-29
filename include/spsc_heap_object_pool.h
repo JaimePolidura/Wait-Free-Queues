@@ -31,30 +31,30 @@ public:
     }
 
     T * take() {
-        return takeOrCreateWithArgs();
+        return take_or_create_with_args();
     }
 
-    T * takeOrCreateWithArgs(auto ... args) {
-        std::queue<T *> * consumersQueue = this->consumers.load(std::memory_order_acquire);
-        std::queue<T *> * producersQueue = this->producers.load(std::memory_order_acquire);
-        bool consumersEmpty = consumersQueue->empty();
-        bool producersEmpty = producersQueue->empty();
+    T * take_or_create_with_args(auto ... args) {
+        std::queue<T *> * consumers_queue = this->consumers.load(std::memory_order_acquire);
+        std::queue<T *> * producers_queue = this->producers.load(std::memory_order_acquire);
+        bool consumers_empty = consumers_queue->empty();
+        bool producers_empty = producers_queue->empty();
 
-        if(!consumersEmpty){
-            return this->popFromQueue(consumersQueue);
+        if(!consumers_empty){
+            return this->popFromQueue(consumers_queue);
         }
-        if(consumersEmpty && producersEmpty) {
+        if(consumers_empty && producers_empty) {
             return new T(args...);
         }
 
-        this->consumers.store(producersQueue, std::memory_order_release);
-        this->producers.store(consumersQueue, std::memory_order_release);
+        this->consumers.store(producers_queue, std::memory_order_release);
+        this->producers.store(consumers_queue, std::memory_order_release);
 
         std::atomic_thread_fence(std::memory_order_release);
 
         this->producer_putting_value_spin_lock.wait_until_unlocked();
 
-        return this->popFromQueue(producersQueue);
+        return this->popFromQueue(producers_queue);
     }
 
     void put(T * toPut) {

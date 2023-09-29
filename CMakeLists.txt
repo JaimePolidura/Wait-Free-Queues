@@ -11,7 +11,7 @@ add_library(${CMAKE_PROJECT_NAME}
         include/ordered_mpsc_queue.hpp
         include/unordered_mpsc_queue.hpp
         include/main.cpp
-        examples/main.cpp
+        benchmarks/main.cpp
         include/spsc_heap_object_pool.h
         include/utils/shared.cpp
         include/utils/spin_lock.hpp
@@ -20,7 +20,7 @@ add_library(${CMAKE_PROJECT_NAME}
 
 include_directories(include)
 
-add_subdirectory(examples)
+add_subdirectory(benchmarks)
 
 if(TESTING)
     add_subdirectory(tst)

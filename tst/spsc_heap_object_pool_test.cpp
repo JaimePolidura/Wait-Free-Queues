@@ -14,11 +14,12 @@ TEST(spsc_object_pool, ThreadedMultiplePutMultipleTake) {
         }
     });
 
+
     std::thread consumer = std::thread([pool, nTimes, raceCondition, raceConditionLastValue, raceConditionValue](){
         auto lastValue = -1;
 
         for(int i = 0; i < nTimes; i++){
-            auto value = *pool->takeOrCreateWithArgs(-1);
+            auto value = *pool->take_or_create_with_args(-1);
 
             bool valueLastValueNotMinusOne = value != -1 && lastValue != -1;
 
@@ -54,7 +55,7 @@ TEST(spsc_object_pool, SingleThreadedMultiplePutMultipleTake) {
 
     ASSERT_EQ(*pool.take(), 3);
     ASSERT_EQ(*pool.take(), 0);
-    ASSERT_EQ(*pool.takeOrCreateWithArgs(10), 10);
+    ASSERT_EQ(*pool.take_or_create_with_args(10), 10);
 }
 
 TEST(spsc_object_pool, Put) {

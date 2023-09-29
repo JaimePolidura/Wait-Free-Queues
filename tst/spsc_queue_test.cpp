@@ -3,7 +3,7 @@
 
 TEST(spsc_queue, multithreaded_no_race_condition) {
     jaime::spsc_queue<int> * queue = new jaime::spsc_queue<int>();
-    int nEnqueues = 1000000;
+    int nEnqueues = 10000000;
     bool * raceConditionFound = new bool(false);
     *raceConditionFound = false;
 

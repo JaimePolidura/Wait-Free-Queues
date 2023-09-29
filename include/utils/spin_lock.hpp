@@ -27,6 +27,10 @@ public:
             std::this_thread::yield();
         }
     }
+
+    bool is_locked() {
+        return this->locked.load(std::memory_order_acquire);
+    }
 };
 
 }

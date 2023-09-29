@@ -15,18 +15,18 @@ public:
     atomic_node_ptr_t prev;
     timestamp_t timestamp;
 
-    epoch_t epoch;
+    epoch_t epoch_enqueued;
 
-    node(): timestamp(0), epoch(0) {}
+    node(): timestamp(0), epoch_enqueued(0) {}
 
     explicit node(T value, timestamp_t timestamp):
-            epoch(0),
+            epoch_enqueued(0),
             value(value),
             prev(nullptr),
             timestamp(timestamp) {}
 
     explicit node(timestamp_t timestamp):
-            epoch(0),
+            epoch_enqueued(0),
             value(value),
             prev(nullptr),
             timestamp(timestamp) {}
@@ -39,64 +39,59 @@ private:
     using atomic_node_prev_field_ptr = std::atomic<std::atomic<node_ptr_t> *>;
 
     atomic_node_prev_field_ptr head;
+    node_ptr_t last;
 
     jaime::spsc_heap_object_pool<node<T>> node_pool;
 
-    std::atomic<epoch_t> producer_epoch;
-    std::atomic<epoch_t> producer_last_head_epoch;
+    std::queue<node_ptr_t> node_pool_intermediate_queue;
 
-    std::queue<node_ptr_t > release_pool;
+    std::atomic<epoch_t> producer_epoch;
+    std::atomic<epoch_t> producer_last_head_epoch_read;
 
 public:
     spsc_queue() {
         node_ptr_t sentinel = new node<T>(0);
-        this->producer_last_head_epoch = 0;
+        this->producer_last_head_epoch_read = 0;
         this->node_pool.populate(100);
         this->head = &sentinel->prev;
         this->producer_epoch = 0;
+        this->last = sentinel->prev;
     }
 
     void enqueue(const T& value, const timestamp_t timestamp = 0) {
-        std::atomic<node_ptr_t> * headPrevFieldNodePtr = this->head.load(std::memory_order_acquire);
-        node_ptr_t headNode = headPrevFieldNodePtr->load(std::memory_order_acquire);
-        node_ptr_t newNode = this->createNode(value, timestamp);
-        node_ptr_t sentinel = this->getNodePtrFromPrevNodeField(headPrevFieldNodePtr);
+        std::atomic<node_ptr_t> * head_prev_field_node_ptr = this->head.load(std::memory_order_acquire);
+        node_ptr_t head_prev_field_node_ptr_holder = this->get_node_ptr_from_prev_node_field(head_prev_field_node_ptr);
+        node_ptr_t head_node = head_prev_field_node_ptr->load(std::memory_order_acquire);
+        node_ptr_t new_node = this->create_node(value, timestamp);
 
-        this->producer_last_head_epoch.store(sentinel->epoch, std::memory_order_release);
+        this->producer_last_head_epoch_read.store(head_prev_field_node_ptr_holder->epoch_enqueued, std::memory_order_release);
 
-        if(headNode == nullptr){
-            sentinel->prev.store(newNode, std::memory_order_release);
+        if(head_node == nullptr){
+            head_prev_field_node_ptr_holder->prev.store(new_node, std::memory_order_release);
+            this->last = new_node;
             return;
         }
 
-        while(headNode->prev.load(std::memory_order_acquire) != nullptr){
-            headNode = headNode->prev.load(std::memory_order_acquire);
-        }
-
-        headNode->prev.store(newNode, std::memory_order_release);
+        this->last->prev.store(new_node, std::memory_order_release);
+        this->last = new_node;
     }
 
-    std::optional<T> dequeue(const timestamp_t timestampExpectedToDequeue = 0) {
-        std::atomic<node_ptr_t> * headPrevFieldNodePtr = this->head.load(std::memory_order_acquire);
-        node_ptr_t headNode = headPrevFieldNodePtr->load(std::memory_order_acquire);
+    std::optional<T> dequeue(const timestamp_t timestamp_expected_to_dequeue = 0) {
+        std::atomic<node_ptr_t> * head_prev_field_node_ptr = this->head.load(std::memory_order_acquire);
+        node_ptr_t head_node = head_prev_field_node_ptr->load(std::memory_order_acquire);
 
-        if(headNode != nullptr &&
-           (timestampExpectedToDequeue == 0 ||
-            headNode->timestamp == timestampExpectedToDequeue)){
+        if(head_node != nullptr &&
+           (timestamp_expected_to_dequeue == 0 ||
+            head_node->timestamp == timestamp_expected_to_dequeue)){
 
-            T value = headNode->value;
+            T value = head_node->value;
+            this->head.store(&head_node->prev, std::memory_order_release);
+            this->node_pool_intermediate_queue.push(head_node);
 
-            this->head.store(&headNode->prev, std::memory_order_release);
-
-            this->release_pool.push(headNode);
-
-            if(release_pool.size() > 10){
-                epoch_t last_head_epoch = this->producer_last_head_epoch.load(std::memory_order_acquire);
-
-                while(!release_pool.empty() && release_pool.front()->epoch < last_head_epoch){
-                    this->node_pool.put(release_pool.front());
-                    this->release_pool.pop();
-                }
+            epoch_t last_head_epoch_read = this->producer_last_head_epoch_read.load(std::memory_order_acquire);
+            while(!node_pool_intermediate_queue.empty() && node_pool_intermediate_queue.front()->epoch_enqueued < last_head_epoch_read){
+                this->node_pool.put(node_pool_intermediate_queue.front());
+                this->node_pool_intermediate_queue.pop();
             }
 
             return std::optional{value};
@@ -106,23 +101,21 @@ public:
     }
 
 private:
-    node_ptr_t getNodePtrFromPrevNodeField(std::atomic<node_ptr_t > * ptrPrev) {
+    node_ptr_t get_node_ptr_from_prev_node_field(std::atomic<node_ptr_t > * prev_ptr) {
         return reinterpret_cast<node_ptr_t>(
-                reinterpret_cast<std::uintptr_t>(ptrPrev) - offsetof(node<T>, prev)
+                reinterpret_cast<std::uintptr_t>(prev_ptr) - offsetof(node<T>, prev)
         );
     }
 
-    node_ptr_t createNode(const T& value, timestamp_t timestamp) {
+    node_ptr_t create_node(const T& value, timestamp_t timestamp) {
         node_ptr_t node = this->node_pool.take();
         node->timestamp = timestamp;
         node->value = value;
-        node->prev.store(nullptr, std::memory_order_release);
+        node->prev.store(nullptr, std::memory_order_relaxed);
 
-        epoch_t lastEpoch = this->producer_epoch.load(std::memory_order_acquire);
-        epoch_t newEpoch = lastEpoch + 1;
-        this->producer_epoch.store(newEpoch, std::memory_order_release);
+        epoch_t new_epoch = this->producer_epoch.fetch_add(1, std::memory_order_release) + 1;
 
-        node->epoch = newEpoch;
+        node->epoch_enqueued = new_epoch;
 
         return node;
     }
