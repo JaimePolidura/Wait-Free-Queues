@@ -64,9 +64,9 @@ public:
         slot_t actual_slot = start_slot;
 
         do {
-            array_entry& resource = this->array[actual_slot];
+            array_entry& slot_array_entry = this->array[actual_slot];
 
-            if (resource.is_free() && resource.try_acquire()) {
+            if (slot_array_entry.is_free() && slot_array_entry.try_acquire()) {
                 return allocation_result{.success = true, .slot = actual_slot};
             }
 
@@ -81,10 +81,10 @@ public:
         slot_t actual_slot = start_slot;
 
         do {
-            array_entry& resource = this->array[actual_slot];
+            array_entry& slot_array_entry = this->array[actual_slot];
 
-            if (resource.is_owned_by_me()) {
-                resource.free();
+            if (slot_array_entry.is_owned_by_me()) {
+                slot_array_entry.free();
                 return;
             }
 
