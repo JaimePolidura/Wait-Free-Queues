@@ -5,6 +5,9 @@ TEST(spsc_queue, multithreaded_no_race_condition) {
     jaime::spsc_queue<int> * queue = new jaime::spsc_queue<int>();
     int nEnqueues = 10000000;
     bool * raceConditionFound = new bool(false);
+    int * dequeuedValueRaceCondition = new int(0);
+    int * prevValueRaceCondition = new int(0);
+
     *raceConditionFound = false;
 
     std::thread producer = std::thread{[queue, nEnqueues](){
@@ -13,7 +16,7 @@ TEST(spsc_queue, multithreaded_no_race_condition) {
         }
     }};
 
-    std::thread consumer = std::thread{[queue, nEnqueues, raceConditionFound](){
+    std::thread consumer = std::thread{[queue, nEnqueues, raceConditionFound, dequeuedValueRaceCondition, prevValueRaceCondition](){
         int prevValue = -1;
 
         for(int i = 0; i < nEnqueues; i++){
@@ -27,7 +30,10 @@ TEST(spsc_queue, multithreaded_no_race_condition) {
             int dequeuedValue = dequeued.value();
 
             if(prevValue + 1 != dequeuedValue){
+                *dequeuedValueRaceCondition = dequeuedValue;
+                *prevValueRaceCondition = prevValue;
                 *raceConditionFound = true;
+
                 break;
             } else {
                 prevValue = dequeuedValue;
@@ -37,6 +43,10 @@ TEST(spsc_queue, multithreaded_no_race_condition) {
 
     producer.join();
     consumer.join();
+
+    if(*raceConditionFound){ //Just for set up a debug point
+        std::cout << "Nothing" << std::endl;
+    }
 
     ASSERT_FALSE(*raceConditionFound);
 }

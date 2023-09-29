@@ -36,14 +36,12 @@ public:
 
     T * take_or_create_with_args(auto ... args) {
         std::queue<T *> * consumers_queue = this->consumers.load(std::memory_order_acquire);
-        std::queue<T *> * producers_queue = this->producers.load(std::memory_order_acquire);
-        bool consumers_empty = consumers_queue->empty();
-        bool producers_empty = producers_queue->empty();
-
-        if(!consumers_empty){
+        if(!consumers_queue->empty()){
             return this->popFromQueue(consumers_queue);
         }
-        if(consumers_empty && producers_empty) {
+
+        std::queue<T *> * producers_queue = this->producers.load(std::memory_order_acquire);
+        if(consumers_queue->empty() && producers_queue->empty()) {
             return new T(args...);
         }
 
