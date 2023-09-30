@@ -1,7 +1,7 @@
 #pragma once
 
-#include "datastructures/lock_free_queue.hpp"
-#include "datastructures/blocking_queue.hpp"
+#include "utils/lock_free_queue.hpp"
+#include "utils/blocking_queue.hpp"
 #include "utils/utils.hpp"
 #include "spsc_queue.hpp"
 #include "bench_shared.h"

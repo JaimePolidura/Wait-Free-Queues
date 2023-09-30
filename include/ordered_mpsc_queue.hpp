@@ -35,7 +35,8 @@ public:
 
     void enqueue(const T& value) {
         timestamp_t timestampEnqueued = jaime::utils::increment_and_get(this->last_timestamp_enqueued);
-        spsc_queue<T> * queue = this->slots + this->get_slot();
+        int slot = this->get_slot();
+        spsc_queue<T> * queue = this->slots + slot;
 
         queue->enqueue(value, timestampEnqueued);
     }

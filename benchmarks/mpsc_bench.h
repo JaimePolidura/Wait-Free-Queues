@@ -1,7 +1,7 @@
 #pragma once
 
-#include "datastructures/lock_free_queue.hpp"
-#include "datastructures/blocking_queue.hpp"
+#include "utils/lock_free_queue.hpp"
+#include "utils/blocking_queue.hpp"
 #include "utils/utils.hpp"
 #include "unordered_mpsc_queue.hpp"
 #include "ordered_mpsc_queue.hpp"
@@ -15,8 +15,8 @@ Result mpsc_unordered_bench(int n_times, int n_producers);
 
 void start_mpsc_bench() {
     print_result(mpsc_blocking_bench(1000000, 8));
-    print_result(mpsc_ordered_bench(1000000, 8));
     print_result(mpsc_unordered_bench(1000000, 8));
+    print_result(mpsc_ordered_bench(1000000, 8));
 }
 
 Result mpsc_blocking_bench(int n_times, int n_producers) {
