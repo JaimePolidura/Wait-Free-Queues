@@ -40,9 +40,6 @@ namespace jaime::utils {
 
     template<typename T>
     T increment_and_get(std::atomic<T>& atomic);
-
-    template<typename T>
-    void zeroMemory(T * ptr);
 }
 
 template<typename T>
@@ -54,14 +51,4 @@ T jaime::utils::increment_and_get(std::atomic<T> &atomic) {
     }while(!atomic.compare_exchange_weak(last, last + 1, std::memory_order_release));
 
     return ++last;
-}
-
-template<typename T>
-void jaime::utils::zeroMemory(T *ptr) {
-    uint8_t * actual = (uint8_t *) ptr;
-
-    for(int i = 0; i < sizeof(T); i++){
-        *actual = 0x00;
-        actual += i;
-    }
 }

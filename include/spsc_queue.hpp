@@ -35,7 +35,7 @@ private:
     using atomic_node_prev_field_ptr = std::atomic<std::atomic<node_ptr_t> *>;
 
     atomic_node_prev_field_ptr head;
-    jaime::spsc_heap_object_pool<node<T>> node_pool;
+    jaime::spsc_heap_object_pool<node<T>> node_pool{};
 
     uint8_t cache_line_padding[64];
     node_ptr_t last;

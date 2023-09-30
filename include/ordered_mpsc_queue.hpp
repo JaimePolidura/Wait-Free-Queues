@@ -27,7 +27,11 @@ public:
         slots(new spsc_queue<T>[n_slots]),
         last_timestamp_enqueued(0),
         slot_allocator(n_slots),
-        n_slots(n_slots) {}
+        n_slots(n_slots) {
+        for (int i = 0; i < n_slots; ++i) {
+            new (&this->slots[i]) jaime::spsc_queue<T>();
+        }
+    }
 
     void enqueue(const T& value) {
         timestamp_t timestampEnqueued = jaime::utils::increment_and_get(this->last_timestamp_enqueued);
@@ -61,18 +65,18 @@ public:
 
 private:
     int get_slot() {
-        int slot = this->slot_allocator.get_slot_owned_by_me();
+        int slot = this->slot_allocator.get_slot_owned_by(jaime::utils::get_thread_id());
 
         if(slot != -1){
             return slot;
         }
 
-        jaime::utils::allocation_result result = slot_allocator.allocate();
+        jaime::utils::allocation_result result = slot_allocator.allocate(jaime::utils::get_thread_id());
         if(result.success){
-            return result.success;
+            return result.slot;
         }
 
-        throw std::runtime_error("The thread capacity of ordered_mpsc_queue has been exceeded");
+        throw std::runtime_error("The thread capacity of unordered_mpsc_queue has been exceeded");
     }
 
     inline int get_next_slot_to_dequeue(int prev) {

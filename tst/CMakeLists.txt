@@ -25,7 +25,10 @@ setup_vcpkg()
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
 add_executable(tst main.cpp spsc_queue_test.cpp
-        spsc_heap_object_pool_test.cpp)
+        spsc_heap_object_pool_test.cpp
+        unordered_mpsc_queue_test.cpp
+        utils/per_thread_slot_array_allocator_test.cpp
+        ordered_mpsc_queue_test.cpp)
 
 find_package(GTest CONFIG REQUIRED)
 target_link_libraries(tst PRIVATE GTest::gtest GTest::gtest_main GTest::gmock GTest::gmock_main wait-free-queues)
