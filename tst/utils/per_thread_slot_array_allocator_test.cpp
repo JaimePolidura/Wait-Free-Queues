@@ -5,11 +5,31 @@
 TEST(per_thread_slot_array_allocator, no_race_condition) {
     std::shared_ptr<jaime::utils::per_thread_slot_array_allocator> allocator = std::make_shared<jaime::utils::per_thread_slot_array_allocator>(5);
 
-    std::thread thread_1 = std::thread([allocator](){allocator->allocate(jaime::utils::get_thread_id());});
-    std::thread thread_2 = std::thread([allocator](){allocator->allocate(jaime::utils::get_thread_id());});
-    std::thread thread_3 = std::thread([allocator](){allocator->allocate(jaime::utils::get_thread_id());});
-    std::thread thread_4 = std::thread([allocator](){allocator->allocate(jaime::utils::get_thread_id());});
-    std::thread thread_5 = std::thread([allocator](){allocator->allocate(jaime::utils::get_thread_id());});
+    std::thread thread_1 = std::thread([allocator](){
+        auto result = allocator->allocate(jaime::utils::get_thread_id());
+        ASSERT_TRUE(result.success);
+        ASSERT_FALSE(result.slot == -1);
+    });
+    std::thread thread_2 = std::thread([allocator](){
+        auto result = allocator->allocate(jaime::utils::get_thread_id());
+        ASSERT_TRUE(result.success);
+        ASSERT_FALSE(result.slot == -1);
+    });
+    std::thread thread_3 = std::thread([allocator](){
+        auto result = allocator->allocate(jaime::utils::get_thread_id());
+        ASSERT_TRUE(result.success);
+        ASSERT_FALSE(result.slot == -1);
+    });
+    std::thread thread_4 = std::thread([allocator](){
+        auto result = allocator->allocate(jaime::utils::get_thread_id());
+        ASSERT_TRUE(result.success);
+        ASSERT_FALSE(result.slot == -1);
+    });
+    std::thread thread_5 = std::thread([allocator](){
+        auto result = allocator->allocate(jaime::utils::get_thread_id());
+        ASSERT_TRUE(result.success);
+        ASSERT_FALSE(result.slot == -1);
+    });
 
     thread_1.join();
     thread_2.join();
