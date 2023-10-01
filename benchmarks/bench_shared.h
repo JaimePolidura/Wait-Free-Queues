@@ -56,6 +56,8 @@ Result queue_bench(const std::string& benchType,
     std::for_each(producers_thread.begin(), producers_thread.end(), [](std::thread& thread){
         thread.join();
     });
+    
+    consumer.join();
 
     return Result{
             .queue_type = queueType,
