@@ -63,13 +63,7 @@ private:
             jaime::thread_number = jaime::thread_numbers.fetch_add(1) + 1;
         }
 
-        slot_t slot = this->slot_allocator.allocate_or_get(jaime::thread_number);
-
-        if(slot != -1){
-            return slot;
-        } else {
-            throw std::runtime_error("The thread capacity of unordered_mpsc_queue has been exceeded");
-        }
+        return this->slot_allocator.allocate_or_get(jaime::thread_number);
     }
 
     inline int get_next_slot_to_dequeue(int prev) {

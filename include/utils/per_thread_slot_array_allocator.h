@@ -40,9 +40,10 @@ public:
 class per_thread_slot_array_allocator {
 private:
     std::vector<array_entry> array;
-    
+    slot_t number_slots;
+
 public:
-    explicit per_thread_slot_array_allocator(slot_t number_slots): array(std::vector<array_entry>(number_slots)) {}
+    explicit per_thread_slot_array_allocator(slot_t number_slots): array(std::vector<array_entry>(number_slots)), number_slots(number_slots) {}
 
     slot_t allocate_or_get(int thread_number) {
         int slot = this->get_slot_owned_by(thread_number);
@@ -51,16 +52,11 @@ public:
             return slot;
         }
 
-        jaime::utils::allocation_result result = this->allocate(thread_number);
-        if(result.success){
-            return result.slot;
-        }
-
-        return -1;
+        return this->allocate(thread_number).slot;
     }
 
     slot_t get_slot_owned_by(int thread_id) {
-        slot_t start_slot = thread_id % array.size();
+        slot_t start_slot = thread_id % this->number_slots;
         slot_t actual_slot = start_slot;
 
         do {
@@ -75,7 +71,7 @@ public:
     }
 
     allocation_result allocate(int thread_id) {
-        slot_t start_slot = thread_id % array.size();
+        slot_t start_slot = thread_id % this->number_slots;
         slot_t actual_slot = start_slot;
 
         do {
@@ -92,7 +88,7 @@ public:
     }
 
     void deallocate(int thread_id) {
-        slot_t start_slot = thread_id % array.size();
+        slot_t start_slot = thread_id % this->number_slots;
         slot_t actual_slot = start_slot;
 
         do {
