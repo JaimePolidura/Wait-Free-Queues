@@ -7,6 +7,9 @@
 
 namespace jaime {
 
+static thread_local int thread_number;
+static std::atomic<int> thread_numbers;
+
 template<typename T>
 class unordered_mpsc_queue {
 private:
@@ -56,18 +59,17 @@ public:
 
 private:
     int get_slot() {
-        int slot = this->slot_allocator.get_slot_owned_by(jaime::utils::get_thread_id());
+        if(jaime::thread_number == 0) {
+            jaime::thread_number = jaime::thread_numbers.fetch_add(1) + 1;
+        }
+
+        slot_t slot = this->slot_allocator.allocate_or_get(jaime::thread_number);
 
         if(slot != -1){
             return slot;
+        } else {
+            throw std::runtime_error("The thread capacity of unordered_mpsc_queue has been exceeded");
         }
-
-        jaime::utils::allocation_result result = slot_allocator.allocate(jaime::utils::get_thread_id());
-        if(result.success){
-            return result.slot;
-        }
-
-        throw std::runtime_error("The thread capacity of unordered_mpsc_queue has been exceeded");
     }
 
     inline int get_next_slot_to_dequeue(int prev) {

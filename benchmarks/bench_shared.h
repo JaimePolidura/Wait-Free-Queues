@@ -22,14 +22,14 @@ struct Result {
     }
 };
 
-Result queue_bench(const std::string& bench_type, const std::string& queue_type, int n_times, int n_producers,
-                   const std::function<void(int)>& enqueue, const std::function<void()>& dequeue);
-
 uint64_t time_now();
-void print_result(const Result& result);
 
-Result queue_bench(const std::string& benchType, const std::string& queueType, int n_times, int n_producers,
-                   const std::function<void(int)>& enqueue, const std::function<void()>& dequeue) {
+Result queue_bench(const std::string& benchType,
+                   const std::string& queueType,
+                   int n_times,
+                   int n_producers,
+                   const std::function<void(int)>& enqueue,
+                   const std::function<void()>& dequeue) {
     uint64_t * consumers_time = new uint64_t();
     std::vector<std::thread> producers_thread{};
     std::vector<uint64_t> * producers_times = new std::vector<uint64_t>(n_producers);

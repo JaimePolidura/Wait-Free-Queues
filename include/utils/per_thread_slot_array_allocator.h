@@ -41,8 +41,29 @@ class per_thread_slot_array_allocator {
 private:
     std::vector<array_entry> array;
 
+    std::mutex porro;
+
 public:
     explicit per_thread_slot_array_allocator(slot_t number_slots): array(std::vector<array_entry>(number_slots)) {}
+
+    slot_t allocate_or_get(int thread_number) {
+        int slot = this->get_slot_owned_by(thread_number);
+
+        if(slot != -1){
+            return slot;
+        }
+
+        jaime::utils::allocation_result result = this->allocate(thread_number);
+        if(result.success){
+            porro.lock();
+            std::cout << thread_number << " -> " << slot << std::endl;
+            porro.unlock();
+
+            return result.slot;
+        }
+
+        return -1;
+    }
 
     slot_t get_slot_owned_by(int thread_id) {
         slot_t start_slot = thread_id % array.size();

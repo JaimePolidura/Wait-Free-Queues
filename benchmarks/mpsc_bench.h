@@ -15,8 +15,8 @@ Result mpsc_unordered_bench(int n_times, int n_producers);
 
 void start_mpsc_bench() {
     print_result(mpsc_blocking_bench(1000000, 8));
-    print_result(mpsc_unordered_bench(1000000, 8));
     print_result(mpsc_ordered_bench(1000000, 8));
+    print_result(mpsc_unordered_bench(1000000, 8));
 }
 
 Result mpsc_blocking_bench(int n_times, int n_producers) {
