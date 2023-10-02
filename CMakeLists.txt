@@ -17,6 +17,7 @@ add_library(${CMAKE_PROJECT_NAME}
         include/utils/spin_lock.hpp
         include/utils/spin_lock.hpp
         include/utils/per_thread_slot_array_allocator.h
+        include/mpsc_queue.h
 )
 
 include_directories(include)
