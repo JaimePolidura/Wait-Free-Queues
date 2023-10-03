@@ -24,7 +24,8 @@ setup_vcpkg()
 
 include_directories(${CMAKE_SOURCE_DIR}/include)
 
-add_executable(tst main.cpp spsc_queue_test.cpp
+add_executable(tst main.cpp
+        spsc_queue_test.cpp
         spsc_heap_object_pool_test.cpp
         unordered_mpsc_queue_test.cpp
         utils/per_thread_slot_array_allocator_test.cpp

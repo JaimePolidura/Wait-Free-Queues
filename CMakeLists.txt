@@ -1,4 +1,5 @@
-option(TESTING ON)
+option(TESTING OFF)
+option(BENCHMARKS OFF)
 
 cmake_minimum_required(VERSION 3.23)
 project(wait-free-queues)
@@ -11,7 +12,6 @@ add_library(${CMAKE_PROJECT_NAME}
         wait-free-queues/ordered_mpsc_queue.hpp
         wait-free-queues/unordered_mpsc_queue.hpp
         wait-free-queues/main.cpp
-        benchmarks/main.cpp
         wait-free-queues/spsc_heap_object_pool.h
         wait-free-queues/utils/spin_lock.hpp
         wait-free-queues/utils/spin_lock.hpp
@@ -22,7 +22,9 @@ add_library(${CMAKE_PROJECT_NAME}
 
 include_directories(wait-free-queues)
 
-add_subdirectory(benchmarks)
+if(BENCHMARKS)
+    add_subdirectory(benchmarks)
+endif ()
 
 if(TESTING)
     add_subdirectory(tst)
