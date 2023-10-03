@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utils/utils.hpp"
+#include "utils/shared.hpp"
 #include "utils/per_thread_slot_array_allocator.h"
 #include "spsc_queue.hpp"
 #include "mpsc_queue.h"

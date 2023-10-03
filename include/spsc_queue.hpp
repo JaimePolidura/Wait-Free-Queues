@@ -1,7 +1,7 @@
 #pragma once
 
 #include "spsc_heap_object_pool.h"
-#include "utils/utils.hpp"
+#include "utils/shared.hpp"
 
 namespace jaime {
 

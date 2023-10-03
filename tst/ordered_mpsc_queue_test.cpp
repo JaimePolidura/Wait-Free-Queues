@@ -1,5 +1,5 @@
 #include <gtest/gtest.h>
-#include "utils/utils.hpp"
+#include "utils/shared.hpp"
 #include "ordered_mpsc_queue.hpp"
 
 TEST(ordered_mpsc_queue, enqueue_dequeue_multiple_thread) {

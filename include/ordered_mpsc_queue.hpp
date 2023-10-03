@@ -1,9 +1,8 @@
 #pragma once
 
-#include "utils/utils.hpp"
-
-#include "spsc_queue.hpp"
 #include "utils/per_thread_slot_array_allocator.h"
+#include "utils/shared.hpp"
+#include "spsc_queue.hpp"
 #include "mpsc_queue.h"
 
 namespace jaime::lock_free {
@@ -11,6 +10,7 @@ namespace jaime::lock_free {
 template<typename T>
 class ordered_mpsc_queue : private jaime::mpsc_queue<T> {
 private:
+    using timestamp_t = uint64_t;
     using slot_t = int;
 
     std::atomic_uint64_t last_timestamp_enqueued{0};

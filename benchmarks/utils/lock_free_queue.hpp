@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utils/utils.hpp"
+#include "utils/shared.hpp"
 
 template <typename T>
 class lock_free_queue {

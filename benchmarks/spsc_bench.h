@@ -2,7 +2,7 @@
 
 #include "utils/lock_free_queue.hpp"
 #include "utils/blocking_queue.hpp"
-#include "utils/utils.hpp"
+#include "utils/shared.hpp"
 #include "spsc_queue.hpp"
 #include "bench_shared.h"
 

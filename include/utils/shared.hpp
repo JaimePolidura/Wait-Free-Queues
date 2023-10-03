@@ -34,21 +34,3 @@
 
 typedef uint64_t epoch_t;
 typedef uint64_t timestamp_t;
-
-namespace jaime::utils {
-    int get_thread_id();
-
-    template<typename T>
-    T increment_and_get(std::atomic<T>& atomic);
-}
-
-template<typename T>
-T jaime::utils::increment_and_get(std::atomic<T> &atomic) {
-    T last;
-
-    do {
-        last = atomic.load();
-    }while(!atomic.compare_exchange_weak(last, last + 1, std::memory_order_release));
-
-    return ++last;
-}
