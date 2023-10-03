@@ -6,20 +6,20 @@ project(wait-free-queues)
 set(CMAKE_CXX_STANDARD 23)
 
 add_library(${CMAKE_PROJECT_NAME}
-        include/spsc_queue.hpp
-        include/utils/shared.hpp
-        include/ordered_mpsc_queue.hpp
-        include/unordered_mpsc_queue.hpp
-        include/main.cpp
+        wait-free-queues/spsc_queue.hpp
+        wait-free-queues/utils/shared.hpp
+        wait-free-queues/ordered_mpsc_queue.hpp
+        wait-free-queues/unordered_mpsc_queue.hpp
+        wait-free-queues/main.cpp
         benchmarks/main.cpp
-        include/spsc_heap_object_pool.h
-        include/utils/spin_lock.hpp
-        include/utils/spin_lock.hpp
-        include/utils/per_thread_slot_array_allocator.h
-        include/mpsc_queue.h
+        wait-free-queues/spsc_heap_object_pool.h
+        wait-free-queues/utils/spin_lock.hpp
+        wait-free-queues/utils/spin_lock.hpp
+        wait-free-queues/utils/per_thread_slot_array_allocator.h
+        wait-free-queues/mpsc_queue.h
 )
 
-include_directories(include)
+include_directories(wait-free-queues)
 
 add_subdirectory(benchmarks)
 

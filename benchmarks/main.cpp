@@ -1,4 +1,3 @@
-#include "spsc_bench.h"
 #include "mpsc_bench.h"
 
 int main() {
