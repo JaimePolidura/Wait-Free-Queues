@@ -17,6 +17,7 @@ add_library(${CMAKE_PROJECT_NAME}
         wait-free-queues/utils/spin_lock.hpp
         wait-free-queues/utils/per_thread_slot_array_allocator.h
         wait-free-queues/mpsc_queue.h
+        wait-free-queues/wait-free-queues.h
 )
 
 include_directories(wait-free-queues)
