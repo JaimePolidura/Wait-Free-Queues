@@ -44,6 +44,18 @@ public:
         return std::nullopt;
     }
 
+    template<typename Rep, typename Period>
+    std::vector<T> dequeue_all_or_sleep_for(std::chrono::duration<Rep, Period> duration) {
+        std::vector<T> values = this->dequeue_all();
+
+        while(values.empty()){
+            std::this_thread::sleep_for(duration);
+            values = this->dequeue_all();
+        }
+
+        return values;
+    }
+
     std::vector<T> dequeue_all() {
         std::vector<T> dequeued{};
 
