@@ -34,6 +34,22 @@ TEST(ordered_mpsc_queue, enqueue_dequeue_multiple_thread) {
     consumer.join();
 }
 
+TEST(ordered_mpsc_queue, dequeue_all) {
+    jaime::lock_free::ordered_mpsc_queue<int> queue = jaime::lock_free::ordered_mpsc_queue<int>(4);
+    queue.enqueue(1);
+    queue.enqueue(2);
+    queue.enqueue(3);
+    queue.enqueue(4);
+
+    std::vector<int> dequeued = queue.dequeue_all();
+
+    ASSERT_EQ(dequeued.size(), 4);
+    ASSERT_EQ(dequeued[0], 1);
+    ASSERT_EQ(dequeued[1], 2);
+    ASSERT_EQ(dequeued[2], 3);
+    ASSERT_EQ(dequeued[3], 4);
+}
+
 TEST(ordered_mpsc_queue, enqueue_dequeue_single_thread) {
     jaime::lock_free::ordered_mpsc_queue<int> queue = jaime::lock_free::ordered_mpsc_queue<int>(1);
     queue.enqueue(1);
