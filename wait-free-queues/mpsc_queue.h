@@ -47,6 +47,10 @@ public:
         return prev + 1 < this->n_slots ? ++prev : 0;
     }
 
+    ~mpsc_queue() {
+        delete[] this->slots;
+    }
+
 protected:
     class dequeue_iterator {
         using slot_t = int;

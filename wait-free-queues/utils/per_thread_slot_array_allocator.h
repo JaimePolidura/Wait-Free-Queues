@@ -5,6 +5,7 @@
 namespace jaime::utils {
 
 using slot_t = int;
+using uslot_t = unsigned int;
 
 struct allocation_result {
     bool success;
@@ -39,11 +40,13 @@ public:
 
 class per_thread_slot_array_allocator {
 private:
+    uslot_t number_slots;
     std::vector<array_entry> array;
-    slot_t number_slots;
 
 public:
-    explicit per_thread_slot_array_allocator(slot_t number_slots): array(std::vector<array_entry>(number_slots)), number_slots(number_slots) {}
+    explicit per_thread_slot_array_allocator(uslot_t number_slots_no_power_two):
+        number_slots(this->to_power_two(number_slots_no_power_two)),
+        array(std::vector<array_entry>(number_slots)) {}
 
     slot_t allocate_or_get(int thread_number) {
         int slot = this->get_slot_owned_by(thread_number);
@@ -56,7 +59,7 @@ public:
     }
 
     slot_t get_slot_owned_by(int thread_id) {
-        slot_t start_slot = thread_id % this->number_slots;
+        slot_t start_slot = this->get_slot_index_by_thread_id(thread_id);
         slot_t actual_slot = start_slot;
 
         do {
@@ -71,7 +74,7 @@ public:
     }
 
     allocation_result allocate(int thread_id) {
-        slot_t start_slot = thread_id % this->number_slots;
+        slot_t start_slot = this->get_slot_index_by_thread_id(thread_id);
         slot_t actual_slot = start_slot;
 
         do {
@@ -88,7 +91,7 @@ public:
     }
 
     void deallocate(int thread_id) {
-        slot_t start_slot = thread_id % this->number_slots;
+        slot_t start_slot = this->get_slot_index_by_thread_id(thread_id);
         slot_t actual_slot = start_slot;
 
         do {
@@ -101,6 +104,27 @@ public:
 
             actual_slot = actual_slot + 1 < this->array.size() ? ++actual_slot : 0;
         } while (start_slot != actual_slot);
+    }
+
+private:
+    inline uslot_t get_slot_index_by_thread_id(int thread_id) const {
+        return (this->number_slots - 1) & thread_id;
+    }
+
+    uslot_t to_power_two(uslot_t init) {
+        if(init <= 1){
+            return 1;
+        }
+
+        init--;
+        init |= init >> 1;
+        init |= init >> 2;
+        init |= init >> 4;
+        init |= init >> 8;
+        init |= init >> 16;
+        init++;
+
+        return init;
     }
 };
 

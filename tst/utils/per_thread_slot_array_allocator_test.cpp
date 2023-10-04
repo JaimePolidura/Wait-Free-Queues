@@ -1,5 +1,4 @@
 #include <gtest/gtest.h>
-#include "utils/shared.hpp"
 #include "utils/per_thread_slot_array_allocator.h"
 
 TEST(per_thread_slot_array_allocator, no_race_condition) {
@@ -38,7 +37,12 @@ TEST(per_thread_slot_array_allocator, no_race_condition) {
     thread_5.join();
 
     //Will loop the whole array
-    ASSERT_FALSE(allocator->allocate(100).success);
+    ASSERT_TRUE(allocator->allocate(100).success);
+    ASSERT_TRUE(allocator->allocate(101).success);
+    ASSERT_TRUE(allocator->allocate(102).success);
+
+    //Number of slots will get rounded up to a power of two, which in this case will be 8
+    ASSERT_FALSE(allocator->allocate(103).success);
 }
 
 TEST(per_thread_slot_array_allocator, get_slot_owned_by) {

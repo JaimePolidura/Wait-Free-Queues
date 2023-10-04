@@ -19,7 +19,7 @@ private:
 
 public:
     explicit ordered_mpsc_queue(int n_slots): jaime::mpsc_queue<T>(n_slots) {}
-
+    
     void enqueue(const T& value) {
         timestamp_t timestampEnqueued = this->last_timestamp_enqueued.fetch_add(1, std::memory_order_relaxed) + 1;
         this->get_queue()->enqueue(value, timestampEnqueued);

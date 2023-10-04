@@ -64,6 +64,16 @@ public:
     }
 
     ~spsc_heap_object_pool() {
+        auto consumers_queue = consumers.load(std::memory_order_acquire);
+        auto producers_queue = producers.load(std::memory_order_acquire);
+
+        while(!consumers_queue->empty()){
+            delete this->popFromQueue(consumers_queue);
+        }
+        while(!producers_queue->empty()){
+            delete this->popFromQueue(producers_queue);
+        }
+
         delete this->consumers;
         delete this->producers;
     }
