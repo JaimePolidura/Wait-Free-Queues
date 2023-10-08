@@ -1,6 +1,6 @@
 #pragma once
 
-#include "utils/shared.hpp"
+#include "./shared.hpp"
 
 namespace jaime::utils {
 
