@@ -33,6 +33,30 @@ public:
 
         return std::nullopt;
     }
+
+    template<typename Rep, typename Period>
+    std::vector<T> dequeue_or_sleep_for(std::chrono::duration<Rep, Period> time) {
+        std::vector<T> toReturn{};
+
+        while(true){
+            for(typename jaime::mpsc_queue<T>::dequeue_iterator it = this->begin(); it != this->end(); ++it){
+                slot_t actual_slot_to_dequeue = *it;
+                spsc_queue<T> * queue = this->slots + actual_slot_to_dequeue;
+                std::optional<T> dequeued_optional = queue->dequeue();
+
+                if(dequeued_optional.has_value()){
+                    this->last_slot_dequeued = actual_slot_to_dequeue;
+                    toReturn.push_back(dequeued_optional.value());
+                }
+            }
+
+            if(toReturn.size() > 0){
+                return toReturn;
+            } else {
+                std::this_thread::sleep_for(time);
+            }
+        }
+    }
 };
 
 }
