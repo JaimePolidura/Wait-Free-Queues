@@ -20,8 +20,10 @@ public:
     }
 
     std::optional<T> dequeue() {
-        for(typename jaime::mpsc_queue<T>::dequeue_iterator it = this->begin(); it != this->end(); ++it){
-            slot_t actual_slot_to_dequeue = *it;
+        typename jaime::mpsc_queue<T>::dequeue_iterator it = this->iterator();
+
+        while (it.hasNext()) {
+            slot_t actual_slot_to_dequeue = it.next();
             spsc_queue<T> * queue = this->slots + actual_slot_to_dequeue;
             std::optional<T> dequeued_optional = queue->dequeue();
 

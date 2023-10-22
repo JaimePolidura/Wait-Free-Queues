@@ -16,12 +16,12 @@ protected:
     slot_t n_slots;
 
     uint8_t padding_cache_line[64];
-    slot_t last_slot_dequeued{};
+    slot_t last_slot_dequeued{0};
 
     std::atomic<int> thread_numbers{-1};
 
 public:
-    explicit mpsc_queue(int n_slots):
+    explicit mpsc_queue(slot_t n_slots):
             slots(new spsc_queue<T>[n_slots]),
             slot_allocator(n_slots),
             n_slots(n_slots) {
@@ -44,7 +44,7 @@ public:
         return this->slot_allocator.allocate_or_get(thread_number);
     }
 
-    inline slot_t get_next_slot_to_dequeue(int prev) {
+    inline slot_t get_next_slot_to_dequeue(slot_t prev) {
         return prev + 1 < this->n_slots ? ++prev : 0;
     }
 
@@ -54,42 +54,32 @@ public:
 
 protected:
     class dequeue_iterator {
-        using slot_t = int;
     private:
         slot_t n_slots;
-        slot_t start;
         slot_t actual;
-        bool first_iteration_already_run;
+        int n_iterations{0};
 
     public:
-        dequeue_iterator(slot_t n_slots, slot_t start): start(start), actual(start), n_slots(n_slots), first_iteration_already_run(false) {}
+        dequeue_iterator(slot_t n_slots, slot_t start): actual(start), n_slots(n_slots) {}
 
-        bool operator==(const dequeue_iterator& other) const {
-            return this->actual == other.actual;
+        bool hasNext() {
+            return this->n_iterations < this->n_slots;
         }
 
-        bool operator!=(const dequeue_iterator& other) const {
-            return this->actual != other.actual || !this->first_iteration_already_run;
+        slot_t next() {
+            this->n_iterations++;
+            return this->actual = this->get_next();
         }
 
-        slot_t operator*() {
-            this->first_iteration_already_run = true;
-            return this->actual;
-        }
-
-        dequeue_iterator operator++() {
-            this->actual = this->actual + 1 < this->n_slots ? ++this->actual : 0;
-            return *this;
+    private:
+        inline slot_t get_next() {
+            return this->actual + 1 < this->n_slots ? this->actual + 1 : 0;
         }
     };
 
 public:
-    dequeue_iterator begin() {
+    dequeue_iterator iterator() {
         return dequeue_iterator(this->n_slots, this->get_next_slot_to_dequeue(this->last_slot_dequeued));
-    }
-
-    dequeue_iterator end() {
-        return dequeue_iterator(this->n_slots, this->last_slot_dequeued);
     }
 };
 

@@ -18,16 +18,18 @@ private:
     timestamp_t last_timestamp_dequeued{0};
 
 public:
-    explicit ordered_mpsc_queue(int n_slots): jaime::mpsc_queue<T>(n_slots) {}
-    
+    explicit ordered_mpsc_queue(slot_t n_slots): jaime::mpsc_queue<T>(n_slots) {}
+
     void enqueue(const T& value) {
         timestamp_t timestampEnqueued = this->last_timestamp_enqueued.fetch_add(1, std::memory_order_relaxed) + 1;
         this->get_queue()->enqueue(value, timestampEnqueued);
     }
 
     std::optional<T> dequeue() {
-        for(typename jaime::mpsc_queue<T>::dequeue_iterator it = this->begin(); it != this->end(); ++it){
-            slot_t actual_slot_to_dequeue = * it;
+        typename jaime::mpsc_queue<T>::dequeue_iterator it = this->iterator();
+
+        while(it.hasNext()){
+            slot_t actual_slot_to_dequeue = it.next();
             jaime::spsc_queue<T> * queue = this->slots + actual_slot_to_dequeue;
 
             timestamp_t timestamp_expected_to_dequeue = this->last_timestamp_dequeued + 1;
@@ -59,8 +61,10 @@ public:
     std::vector<T> dequeue_all() {
         std::vector<T> dequeued{};
 
-        for(typename jaime::mpsc_queue<T>::dequeue_iterator it = this->begin(); it != this->end(); ++it){
-            slot_t actual_slot_to_dequeue = * it;
+        typename jaime::mpsc_queue<T>::dequeue_iterator it = this->iterator();
+
+        while (it.hasNext()) {
+            slot_t actual_slot_to_dequeue = it.next();
             jaime::spsc_queue<T> * queue = this->slots + actual_slot_to_dequeue;
 
             timestamp_t timestamp_expected_to_dequeue = this->last_timestamp_dequeued + 1;
