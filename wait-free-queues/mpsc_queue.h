@@ -6,9 +6,6 @@
 
 namespace jaime {
 
-static thread_local int thread_number;
-static std::atomic<int> thread_numbers;
-
 template<typename T>
 class mpsc_queue {
 protected:
@@ -20,6 +17,8 @@ protected:
 
     uint8_t padding_cache_line[64];
     slot_t last_slot_dequeued{};
+
+    std::atomic<int> thread_numbers{-1};
 
 public:
     explicit mpsc_queue(int n_slots):
@@ -36,11 +35,13 @@ public:
     }
 
     slot_t get_slot() {
-        if(jaime::thread_number == 0) {
-            jaime::thread_number = jaime::thread_numbers.fetch_add(1) + 1;
+        static thread_local int thread_number = -1;
+
+        if(thread_number == -1) {
+            thread_number = this->thread_numbers.fetch_add(1) + 1;
         }
 
-        return this->slot_allocator.allocate_or_get(jaime::thread_number);
+        return this->slot_allocator.allocate_or_get(thread_number);
     }
 
     inline slot_t get_next_slot_to_dequeue(int prev) {

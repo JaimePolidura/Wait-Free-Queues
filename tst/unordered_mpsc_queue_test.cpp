@@ -3,7 +3,7 @@
 #include "unordered_mpsc_queue.hpp"
 
 TEST(unordered_mpsc_queue, enqueue_dequeue_multiple_threads) {
-    jaime::unordered_mpsc_queue<int> * queue = new jaime::unordered_mpsc_queue<int>(3);
+    std::shared_ptr<jaime::unordered_mpsc_queue<int>> queue = std::make_shared<jaime::unordered_mpsc_queue<int>>(3);
     int n_times = 100000;
 
     std::thread producer_1 = std::thread([queue, n_times](){
